@@ -2,7 +2,7 @@ from sense_hat import SenseHat
 import time
 
 sense = SenseHat()
-sense.set_rotation(270)
+sense.set_rotation(0)
 
 sense.show_message("Ella")
 
