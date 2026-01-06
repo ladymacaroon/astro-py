@@ -1,37 +1,36 @@
-from sense_hat import SenseHat
-import time
+# from picamzero import Camera
 
-sense = SenseHat()
-sense.set_rotation(0)
+# cam = Camera()
 
-sense.show_message("Ella")
+# cam.capture_sequence("sequence", num_images=3, interval=3)
 
-rg = [
-    (255, 0, 0), (255, 17, 0), (255, 34, 0), (255, 51, 0), (255, 68, 0), (255, 85, 0), (255, 102, 0), (255, 119, 0),
-    (255, 136, 0), (255, 153, 0), (255, 170, 0), (255, 187, 0), (255, 204, 0), (255, 221, 0), (255, 238, 0), (255, 255, 0),
-    (238, 255, 0), (221, 255, 0), (204, 255, 0), (187, 255, 0), (170, 255, 0), (153, 255, 0), (136, 255, 0), (119, 255, 0),
-    (102, 255, 0), (85, 255, 0), (68, 255, 0), (51, 255, 0), (34, 255, 0), (17, 255, 0), (0, 255, 17), (0, 255, 34),
-    (0, 255, 51), (0, 255, 68), (0, 255, 85), (0, 255, 102), (0, 255, 119), (0, 255, 136), (0, 255, 153), (0, 255, 170),
-    (0, 255, 187), (0, 255, 204), (0, 255, 221), (0, 255, 238), (0, 255, 255), (0, 238, 255), (0, 221, 255), (0, 204, 255),
-    (0, 187, 255), (0, 170, 255), (0, 153, 255), (0, 136, 255), (0, 119, 255), (0, 102, 255), (0, 85, 255), (0, 68, 255),
-    (0, 51, 255), (0, 34, 255), (0, 17, 255), (0, 0, 255), (17, 0, 255), (34, 0, 255), (51, 0, 255), (68, 0, 255),
-    (85, 0, 255), (102, 0, 255), (119, 0, 255), (136, 0, 255), (153, 0, 255), (170, 0, 255), (187, 0, 255), (204, 0, 255),
-    (221, 0, 255), (238, 0, 255), (255, 0, 255)
-]
+from astro_pi_orbit import ISS
+from picamzero import Camera
 
-for x in range(100):
+iss = ISS()
 
-    paxi = [
-        rg[(0 + x) %64], rg[(1 + x) %64], rg[(2 + x) %64], rg[(3 + x) %64], rg[(4 + x) %64], rg[(5 + x) %64], rg[(6 + x) %64], rg[(7 + x) %64],
-        rg[(27 + x) %64], rg[(28 + x) %64], rg[(29 + x) %64], rg[(30 + x) %64], rg[(31 + x) %64], rg[(32 + x) %64], rg[(33 + x) %64], rg[(8 + x) %64],
-        rg[(26 + x) %64], rg[(47 + x) %64], rg[(48 + x) %64], rg[(49 + x) %64], rg[(50 + x) %64], rg[(51 + x) %64], rg[(34 + x) %64], rg[(9 + x) %64],
-        rg[(25 + x) %64], rg[(46 + x) %64], rg[(59 + x) %64], rg[(60 + x) %64], rg[(61 + x) %64], rg[(52 + x) %64], rg[(35 + x) %64], rg[(10 + x) %64],
-        rg[(24 + x) %64], rg[(45 + x) %64], rg[(58 + x) %64], rg[(63 + x) %64], rg[(62 + x) %64], rg[(53 + x) %64], rg[(36 + x) %64], rg[(11 + x) %64],
-        rg[(23 + x) %64], rg[(44 + x) %64], rg[(57 + x) %64], rg[(56 + x) %64], rg[(55 + x) %64], rg[(54 + x) %64], rg[(37 + x) %64], rg[(12 + x) %64],
-        rg[(22 + x) %64], rg[(43 + x) %64], rg[(42 + x) %64], rg[(41 + x) %64], rg[(40 + x) %64], rg[(39 + x) %64], rg[(38 + x) %64], rg[(13 + x) %64],
-        rg[(21 + x) %64], rg[(20 + x) %64], rg[(19 + x) %64], rg[(18 + x) %64], rg[(17 + x) %64], rg[(16 + x) %64], rg[(15 + x) %64], rg[(14 + x) %64],
-        ]
+def get_gps_coordinates(iss):
+    """
+    Returns a tuple of latitude and longitude coordinates expressed
+    in signed degrees minutes seconds.
+    """
+    point = iss.coordinates()
+    return (point.latitude.signed_dms(), point.longitude.signed_dms())
 
-    time.sleep(0.1)
+cam = Camera()
+cam.take_photo("gps_image1.jpg", gps_coordinates=get_gps_coordinates(iss))
 
-    sense.set_pixels(paxi)
+
+
+
+estimate_kmps = 7.1234567890  # Replace with your estimate
+
+estimate_kmps_formatted = "{:.4f}".format(estimate_kmps)
+
+output_string = estimate_kmps_formatted
+
+file_path = "result.txt"
+with open(file_path, 'w') as file:
+    file.write(output_string)
+
+print("Data written to", file_path)
