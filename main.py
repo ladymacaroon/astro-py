@@ -3,17 +3,16 @@ from picamzero import Camera
 import PIL.Image
 import PIL.ExifTags
 
-cam = Camera()
-
-iss = ISS()
 
 def get_gps_coordinates(iss):
 
     point = iss.coordinates()
     return (point.latitude.signed_dms(), point.longitude.signed_dms())
 
-imagename1 = cam.take_photo("gps_image1.jpg", gps_coordinates = get_gps_coordinates(iss))
+cam = Camera()
+iss = ISS()
 
+imagename1 = cam.take_photo("gps_image1.jpg", gps_coordinates = get_gps_coordinates(iss))
 imagename2 = cam.take_photo("gps_image2.jpg", gps_coordinates = get_gps_coordinates(iss))
 
 image1 = PIL.Image.open(imagename1)
@@ -27,8 +26,23 @@ exif1 = {
     if k in PIL.ExifTags.TAGS
 }
 
-print(exif1)
+exif2 = {
+    PIL.ExifTags.TAGS[k]: v
+    for k, v in image2._getexif().items()
+    if k in PIL.ExifTags.TAGS
+}
 
+coordinates = []
+
+for k, v in exif1.items():
+    if k == 'GPSInfo':
+        coordinates.append(v)
+
+for k, v in exif2.items():
+    if k == 'GPSInfo':
+        coordinates.append(v)
+
+print(coordinates)
 
 estimate_kmps = 27
 
