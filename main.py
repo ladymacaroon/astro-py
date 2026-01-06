@@ -1,29 +1,36 @@
-# from picamzero import Camera
-
-# cam = Camera()
-
-# cam.capture_sequence("sequence", num_images=3, interval=3)
-
 from astro_pi_orbit import ISS
 from picamzero import Camera
+import PIL.Image
+import PIL.ExifTags
+
+cam = Camera()
 
 iss = ISS()
 
 def get_gps_coordinates(iss):
-    """
-    Returns a tuple of latitude and longitude coordinates expressed
-    in signed degrees minutes seconds.
-    """
+
     point = iss.coordinates()
     return (point.latitude.signed_dms(), point.longitude.signed_dms())
 
-cam = Camera()
-cam.take_photo("gps_image1.jpg", gps_coordinates=get_gps_coordinates(iss))
+imagename1 = cam.take_photo("gps_image1.jpg", gps_coordinates = get_gps_coordinates(iss))
+
+imagename2 = cam.take_photo("gps_image2.jpg", gps_coordinates = get_gps_coordinates(iss))
+
+image1 = PIL.Image.open(imagename1)
+image2 = PIL.Image.open(imagename2)
+
+exifdata = image1._getexif()
+
+exif1 = {
+    PIL.ExifTags.TAGS[k]: v
+    for k, v in image1._getexif().items()
+    if k in PIL.ExifTags.TAGS
+}
+
+print(exif1)
 
 
-
-
-estimate_kmps = 7.1234567890  # Replace with your estimate
+estimate_kmps = 27
 
 estimate_kmps_formatted = "{:.4f}".format(estimate_kmps)
 
