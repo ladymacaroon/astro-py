@@ -1,7 +1,7 @@
 from astro_pi_orbit import ISS
 from picamzero import Camera
 import PIL.Image
-import PIL.ExifTags
+from PIL.ExifTags import TAGS, GPSTAGS
 
 
 def get_gps_coordinates(iss):
@@ -20,30 +20,51 @@ image2 = PIL.Image.open(imagename2)
 
 exifdata = image1._getexif()
 
-exif1 = {
-    PIL.ExifTags.TAGS[k]: v
-    for k, v in image1._getexif().items()
-    if k in PIL.ExifTags.TAGS
-}
+for tag, value in exifdata.items():
+        exif_table = {}
+        decoded = TAGS.get(tag, tag)
+        exif_table[decoded] = value
 
-exif2 = {
-    PIL.ExifTags.TAGS[k]: v
-    for k, v in image2._getexif().items()
-    if k in PIL.ExifTags.TAGS
-}
+gps_info = {}
+for key in exif_table['gps_info'].keys():
+    decode = GPSTAGS.get(key,key)
+    gps_info[decode] = exif_table['gps_info'][key]
 
-coordinates = []
+print(gps_info)
 
-for k, v in exif1.items():
-    if k == 'GPSInfo':
-        coordinates.append(v)
+# exif1 = {
+#     PIL.ExifTags.TAGS[k]: v
+#     for k, v in image1._getexif().items()
+#     if k in PIL.ExifTags.TAGS
+# }
 
-for k, v in exif2.items():
-    if k == 'GPSInfo':
-        coordinates.append(v)
+# exif2 = {
+#     PIL.ExifTags.TAGS[k]: v
+#     for k, v in image2._getexif().items()
+#     if k in PIL.ExifTags.TAGS
+# }
 
-print(coordinates)
+# coordinates = []
 
+# for k, v in exif1.items():
+#     if k == 'GPSInfo':
+#         v = str(v)
+#         coordinates.append(v)
+
+#     print(v)
+
+#     if v:
+#         v = str(v)
+#         latitude = f"{v[2][0]}°{v[2][1]}'{v[2][2]}\" {v[1]}"
+#         longitude = f"{v[4][0]}°{v[4][1]}'{v[4][2]}\" {v[3]}"
+
+# # for k, v in exif2.items():
+# #     if k == 'GPSInfo':
+# #         coordinates.append(v)
+
+
+# print(f"{latitude} : {longitude}")
+    
 estimate_kmps = 27
 
 estimate_kmps_formatted = "{:.4f}".format(estimate_kmps)
